@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Movie List{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Movie List</h1>
+<style>
+
+
+.movie-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-10px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    border-color: #000000;
+}
+
+.movie-card img {
+    border-bottom: 1px solid #878787; 
+}
+</style>
+
+<div class="row">
+    {% load static %}
+    {% for movie in qs %}
+    <div class="col-md-4 mb-4">
+        <div class="card movie-card shadow-sm border-light rounded">
+            {% if movie.poster %}
+            <img src="{{ movie.poster.url }}" 
+                 alt="{{ movie.title }} poster"
+                 class="card-img-top" 
+                 style="width: 100%; height: 200px; object-fit: contain;" 
+                 loading="lazy">
+            {% else %}
+            <img src="{% static 'images/movie.jpg' %}" 
+                 alt="{{ movie.title }} poster"
+                 class="card-img-top" 
+                 style="width: 100%; height: 200px; object-fit: cover;"
+                 loading="lazy">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title text-center">{{ movie.title }}</h5>
+                <p class="card-text"><strong>Director:</strong> {{ movie.director }}</p>
+                <p class="card-text"><strong>Genre:</strong> {{ movie.genre }}</p>
+                <p class="card-text"><strong>Release Year:</strong> {{ movie.release_year }}</p>
+                <p class="card-text"><strong>Rating:</strong> {{ movie.rating }}</p>
+                <p class="card-text"><strong>Watched:</strong> {{ movie.watched|yesno:"Yes,No" }}</p>
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'movie_edit' movie.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'movie_delete' movie.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            No movies found.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
